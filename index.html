@@ -683,12 +683,9 @@
   }
 
   async function apiPost(body) {
-    const r = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      redirect: 'follow',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
+    const url = new URL(SCRIPT_URL);
+    Object.entries(body).forEach(([k, v]) => url.searchParams.set(k, String(v)));
+    const r = await fetch(url, { redirect: 'follow' });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     return r.json();
   }
