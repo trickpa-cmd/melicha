@@ -3,590 +3,484 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Melicha — Ledger</title>
+<title>Melicha</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  /* ── Reset & Base ─────────────────────────────────── */
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --bg:         #0d0f0e;
-    --surface:    #141714;
-    --surface2:   #1c201b;
-    --border:     #2a2f29;
-    --text:       #e8ede6;
-    --muted:      #6b756a;
-    --green:      #5dba6a;
-    --green-dim:  #1e3a22;
-    --red:        #e05555;
-    --red-dim:    #3a1e1e;
-    --gold:       #c9a84c;
-    --gold-dim:   #2e2510;
-    --mono:       'IBM Plex Mono', monospace;
-    --serif:      'Libre Baskerville', serif;
-    --radius:     10px;
-  }
+:root {
+  --bg:        #f7f7f5;
+  --white:     #ffffff;
+  --border:    #e8e8e4;
+  --border2:   #d4d4ce;
+  --text:      #1a1a18;
+  --sub:       #6b6b66;
+  --muted:     #a8a8a2;
+  --green:     #1a7a3c;
+  --green-bg:  #edf7f1;
+  --red:       #c0392b;
+  --red-bg:    #fdf0ee;
+  --accent:    #1a1a18;
+  --radius:    12px;
+  --sans:      'DM Sans', sans-serif;
+  --mono:      'DM Mono', monospace;
+}
 
-  html, body {
-    height: 100%;
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--mono);
-    -webkit-font-smoothing: antialiased;
-    overscroll-behavior: none;
-  }
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
 
-  /* ── Layout ───────────────────────────────────────── */
-  .app {
-    display: flex;
-    flex-direction: column;
-    min-height: 100dvh;
-    max-width: 520px;
-    margin: 0 auto;
-    padding: 0 0 env(safe-area-inset-bottom);
-  }
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
 
-  /* ── Header ───────────────────────────────────────── */
-  .header {
-    padding: 32px 20px 0;
-    position: relative;
-  }
+/* ── Header ── */
+.header {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 20px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
 
-  .header-top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 24px;
-  }
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
 
-  .account-name {
-    font-family: var(--serif);
-    font-size: 13px;
-    font-style: italic;
-    color: var(--gold);
-    letter-spacing: 0.04em;
-    text-transform: lowercase;
-  }
+.account-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--sub);
+  letter-spacing: 0.01em;
+}
 
-  .sync-btn {
-    background: none;
-    border: none;
-    color: var(--muted);
-    cursor: pointer;
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    padding: 4px 8px;
-    border-radius: 4px;
-    transition: color 0.2s, background 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .sync-btn:hover { color: var(--text); background: var(--surface2); }
-  .sync-btn.spinning svg { animation: spin 0.8s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
+.sync-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--sub);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.sync-btn:hover { background: var(--bg); border-color: var(--accent); color: var(--accent); }
+.sync-btn.spinning svg { animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-  .balance-section {
-    margin-bottom: 28px;
-  }
+.balance-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
 
-  .balance-label {
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 8px;
-  }
+.balance-amount {
+  font-family: var(--mono);
+  font-size: 42px;
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--text);
+  transition: color 0.3s;
+}
+.balance-amount.positive { color: var(--green); }
+.balance-amount.negative { color: var(--red); }
 
-  .balance-amount {
-    font-family: var(--mono);
-    font-size: clamp(38px, 10vw, 54px);
-    font-weight: 300;
-    letter-spacing: -0.02em;
-    line-height: 1;
-    transition: color 0.3s;
-  }
+.balance-amount .currency {
+  font-size: 0.45em;
+  font-weight: 400;
+  vertical-align: super;
+  margin-right: 2px;
+  opacity: 0.5;
+}
 
-  .balance-amount.positive { color: var(--green); }
-  .balance-amount.negative { color: var(--red); }
-  .balance-amount.zero     { color: var(--muted); }
+/* ── Transaction list ── */
+.tx-section {
+  flex: 1;
+  padding: 16px 16px 120px;
+  overflow-y: auto;
+}
 
-  .balance-currency {
-    font-size: 0.38em;
-    font-weight: 500;
-    vertical-align: super;
-    opacity: 0.6;
-    margin-right: 4px;
-  }
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 4px 12px;
+}
 
-  .divider {
-    height: 1px;
-    background: var(--border);
-    margin: 0 20px;
-  }
+.section-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
 
-  /* ── Transactions list ────────────────────────────── */
-  .tx-section {
-    flex: 1;
-    overflow-y: auto;
-    padding: 0 20px;
-    -webkit-overflow-scrolling: touch;
-  }
+.section-count {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  background: var(--border);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
 
-  .tx-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 0 12px;
-    position: sticky;
-    top: 0;
-    background: var(--bg);
-    z-index: 2;
-  }
+.tx-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
 
-  .tx-title {
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
+.tx-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  position: relative;
+  overflow: hidden;
+}
 
-  .tx-count {
-    font-size: 10px;
-    color: var(--muted);
-    background: var(--surface2);
-    padding: 2px 8px;
-    border-radius: 20px;
-  }
+.tx-card:active { box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
 
-  .tx-list {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding-bottom: 100px;
-  }
+.tx-card.confirming {
+  border-color: var(--red);
+  background: var(--red-bg);
+}
 
-  .tx-item {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    grid-template-rows: auto auto;
-    gap: 2px 12px;
-    padding: 14px 16px;
-    border-radius: var(--radius);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
-    position: relative;
-    overflow: hidden;
-  }
+.tx-row1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 4px;
+}
 
-  .tx-item::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    border-radius: 3px 0 0 3px;
-  }
+.tx-notes {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
 
-  .tx-item.positive::before { background: var(--green); }
-  .tx-item.negative::before { background: var(--red); }
+.tx-amount {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.tx-amount.positive { color: var(--green); }
+.tx-amount.negative { color: var(--red); }
 
-  .tx-item:active { background: var(--surface2); }
+.tx-row2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-  /* delete confirmation state */
-  .tx-item.confirming {
-    border-color: var(--red);
-    background: var(--red-dim);
-  }
+.tx-date {
+  font-size: 12px;
+  color: var(--muted);
+}
 
-  .tx-notes {
-    font-size: 13px;
-    color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    grid-column: 1;
-  }
+.tx-bal {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}
 
-  .tx-date {
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.04em;
-    grid-column: 1;
-  }
+/* Delete confirm */
+.tx-confirm {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(192,57,43,0.2);
+}
+.tx-card.confirming .tx-confirm { display: flex; }
 
-  .tx-amount {
-    font-size: 16px;
-    font-weight: 500;
-    letter-spacing: -0.01em;
-    grid-column: 2;
-    grid-row: 1;
-    align-self: center;
-    white-space: nowrap;
-  }
+.confirm-text { font-size: 12px; color: var(--red); font-weight: 500; }
 
-  .tx-amount.positive { color: var(--green); }
-  .tx-amount.negative { color: var(--red); }
+.confirm-btns { display: flex; gap: 8px; }
 
-  .tx-balance {
-    font-size: 11px;
-    color: var(--muted);
-    grid-column: 2;
-    grid-row: 2;
-    text-align: right;
-    white-space: nowrap;
-  }
+.btn-keep, .btn-del {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 14px;
+  border-radius: 6px;
+  border: 1px solid;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-keep { border-color: var(--border2); color: var(--sub); background: var(--white); }
+.btn-keep:hover { border-color: var(--accent); color: var(--accent); }
+.btn-del { border-color: var(--red); color: var(--red); background: transparent; }
+.btn-del:hover { background: var(--red); color: white; }
 
-  .tx-confirm-bar {
-    display: none;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 10px;
-    grid-column: 1 / -1;
-  }
+/* Empty */
+.empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+  font-size: 14px;
+}
 
-  .tx-item.confirming .tx-confirm-bar { display: flex; }
+/* ── Add button ── */
+.add-bar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  padding: 12px 16px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, var(--bg) 65%, transparent);
+}
 
-  .tx-confirm-text {
-    font-size: 11px;
-    color: var(--red);
-    letter-spacing: 0.06em;
-  }
+.add-btn {
+  width: 100%;
+  padding: 15px;
+  background: var(--accent);
+  color: white;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: opacity 0.15s;
+  letter-spacing: 0.01em;
+}
+.add-btn:active { opacity: 0.85; }
 
-  .tx-confirm-actions {
-    display: flex;
-    gap: 8px;
-  }
+/* ── Modal ── */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(2px);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.backdrop.open { opacity: 1; pointer-events: all; }
 
-  .btn-cancel-del, .btn-confirm-del {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    padding: 4px 10px;
-    border-radius: 4px;
-    border: 1px solid;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
+.modal {
+  background: var(--white);
+  border-radius: 20px 20px 0 0;
+  padding: 28px 20px;
+  padding-bottom: calc(28px + env(safe-area-inset-bottom));
+  width: 100%;
+  max-width: 480px;
+  transform: translateY(20px);
+  transition: transform 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.backdrop.open .modal { transform: translateY(0); }
 
-  .btn-cancel-del {
-    border-color: var(--border);
-    color: var(--muted);
-    background: transparent;
-  }
-  .btn-cancel-del:hover { color: var(--text); border-color: var(--muted); }
+.modal-handle {
+  width: 36px;
+  height: 4px;
+  background: var(--border2);
+  border-radius: 2px;
+  margin: 0 auto 24px;
+}
 
-  .btn-confirm-del {
-    border-color: var(--red);
-    color: var(--red);
-    background: transparent;
-  }
-  .btn-confirm-del:hover { background: var(--red); color: white; }
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
 
-  /* Empty state */
-  .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--muted);
-  }
-  .empty-state-icon { font-size: 32px; margin-bottom: 12px; opacity: 0.4; }
-  .empty-state-text { font-size: 13px; letter-spacing: 0.04em; }
+/* Type toggle */
+.type-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 20px;
+}
 
-  /* ── Add transaction button ───────────────────────── */
-  .add-bar {
-    position: fixed;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    max-width: 520px;
-    padding: 12px 20px;
-    padding-bottom: calc(12px + env(safe-area-inset-bottom));
-    background: linear-gradient(to top, var(--bg) 60%, transparent);
-    z-index: 10;
-  }
+.type-opt {
+  padding: 11px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--sub);
+}
+.type-opt.sel-income  { border-color: var(--green); background: var(--green-bg); color: var(--green); }
+.type-opt.sel-expense { border-color: var(--red);   background: var(--red-bg);   color: var(--red);   }
 
-  .add-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    padding: 16px;
-    background: var(--gold);
-    color: #0d0f0e;
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    border: none;
-    border-radius: var(--radius);
-    cursor: pointer;
-    transition: opacity 0.15s, transform 0.1s;
-  }
-  .add-btn:active { transform: scale(0.98); opacity: 0.9; }
+/* Form */
+.field { margin-bottom: 14px; }
 
-  /* ── Modal ────────────────────────────────────────── */
-  .modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(13, 15, 14, 0.85);
-    backdrop-filter: blur(4px);
-    z-index: 100;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.25s;
-  }
+.field-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 7px;
+}
 
-  .modal-backdrop.open {
-    opacity: 1;
-    pointer-events: all;
-  }
+.field-wrap { position: relative; }
+.field-prefix {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 15px;
+  pointer-events: none;
+}
 
-  .modal {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px 16px 0 0;
-    padding: 28px 24px;
-    padding-bottom: calc(28px + env(safe-area-inset-bottom));
-    width: 100%;
-    max-width: 520px;
-    transform: translateY(30px);
-    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
-  }
+.field-input {
+  width: 100%;
+  padding: 13px 14px;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+  -webkit-appearance: none;
+}
+.field-input.with-prefix { padding-left: 28px; }
+.field-input:focus { border-color: var(--accent); }
+.field-input::placeholder { color: var(--muted); }
 
-  .modal-backdrop.open .modal {
-    transform: translateY(0);
-  }
+/* Modal actions */
+.modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 10px;
+  margin-top: 20px;
+}
 
-  .modal-title {
-    font-family: var(--serif);
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 24px;
-    color: var(--text);
-  }
+.btn-cancel-modal {
+  padding: 14px;
+  border: 1.5px solid var(--border2);
+  border-radius: 10px;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--sub);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-cancel-modal:hover { border-color: var(--accent); color: var(--accent); }
 
-  /* Toggle: Income / Expense */
-  .type-toggle {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    background: var(--surface2);
-    border-radius: 8px;
-    padding: 3px;
-    margin-bottom: 20px;
-    border: 1px solid var(--border);
-  }
+.btn-save {
+  padding: 14px;
+  background: var(--accent);
+  border: none;
+  border-radius: 10px;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.btn-save:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  .type-btn {
-    padding: 10px;
-    border-radius: 6px;
-    border: none;
-    background: transparent;
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.2s;
-    color: var(--muted);
-  }
-
-  .type-btn.active-income  { background: var(--green-dim); color: var(--green);  }
-  .type-btn.active-expense { background: var(--red-dim);   color: var(--red);    }
-
-  /* Inputs */
-  .form-group {
-    margin-bottom: 16px;
-  }
-
-  .form-label {
-    display: block;
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 8px;
-  }
-
-  .form-input {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 16px;
-    padding: 13px 14px;
-    outline: none;
-    transition: border-color 0.2s;
-    -webkit-appearance: none;
-  }
-
-  .form-input:focus {
-    border-color: var(--gold);
-  }
-
-  .form-input::placeholder {
-    color: var(--muted);
-    font-size: 14px;
-  }
-
-  /* Amount row with currency prefix */
-  .amount-wrapper {
-    position: relative;
-  }
-
-  .amount-prefix {
-    position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--muted);
-    font-size: 14px;
-    pointer-events: none;
-  }
-
-  .form-input.amount-input {
-    padding-left: 30px;
-  }
-
-  /* Modal actions */
-  .modal-actions {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 10px;
-    margin-top: 24px;
-  }
-
-  .btn-cancel {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 0.08em;
-    padding: 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .btn-cancel:hover { border-color: var(--muted); color: var(--text); }
-
-  .btn-submit {
-    background: var(--gold);
-    border: none;
-    color: #0d0f0e;
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: opacity 0.15s;
-  }
-  .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
-  .btn-submit:not(:disabled):active { opacity: 0.85; }
-
-  /* Error / loading */
-  .toast {
-    position: fixed;
-    bottom: 100px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    padding: 10px 18px;
-    border-radius: 20px;
-    font-size: 12px;
-    color: var(--muted);
-    z-index: 200;
-    white-space: nowrap;
-    opacity: 0;
-    transition: opacity 0.2s, transform 0.2s;
-    pointer-events: none;
-  }
-  .toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-  .toast.error { border-color: var(--red); color: var(--red); }
-
-  /* Config banner */
-  .config-banner {
-    margin: 12px 20px;
-    padding: 12px 14px;
-    background: var(--gold-dim);
-    border: 1px solid #4a3a18;
-    border-radius: 8px;
-    font-size: 11px;
-    color: var(--gold);
-    letter-spacing: 0.04em;
-    line-height: 1.6;
-  }
-  .config-banner a {
-    color: var(--gold);
-    text-decoration: underline;
-    cursor: pointer;
-  }
-
-  /* Scrollbar */
-  .tx-section::-webkit-scrollbar { width: 4px; }
-  .tx-section::-webkit-scrollbar-track { background: transparent; }
-  .tx-section::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  background: var(--text);
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 9px 18px;
+  border-radius: 20px;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.err  { background: var(--red); }
 </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- Header -->
   <div class="header">
-    <div class="header-top">
-      <div class="account-name">Melicha</div>
+    <div class="header-row">
+      <div class="account-label">Melicha Balance</div>
       <button class="sync-btn" id="syncBtn" onclick="loadData()">
-        <svg id="syncIcon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg id="syncIco" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
           <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/>
           <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
         </svg>
-        sync
+        Sync
       </button>
     </div>
-    <div class="balance-section">
-      <div class="balance-label">Current Balance</div>
-      <div class="balance-amount zero" id="balanceDisplay">
-        <span class="balance-currency">$</span><span id="balanceNumber">—</span>
-      </div>
+    <div class="balance-label">Current Balance</div>
+    <div class="balance-amount" id="balDisplay">
+      <span class="currency">$</span><span id="balNum">—</span>
     </div>
   </div>
 
-  <div class="divider"></div>
-
-  <!-- Transactions -->
   <div class="tx-section">
-    <div class="tx-header">
-      <div class="tx-title">Transactions</div>
-      <div class="tx-count" id="txCount">—</div>
+    <div class="section-header">
+      <div class="section-title">Transactions</div>
+      <div class="section-count" id="txCount">—</div>
     </div>
     <div class="tx-list" id="txList">
-      <div class="empty-state">
-        <div class="empty-state-icon">⏳</div>
-        <div class="empty-state-text">loading…</div>
-      </div>
+      <div class="empty">Loading…</div>
     </div>
   </div>
 
-  <!-- Add button -->
   <div class="add-bar">
     <button class="add-btn" onclick="openModal()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
@@ -598,278 +492,233 @@
 </div>
 
 <!-- Modal -->
-<div class="modal-backdrop" id="modalBackdrop" onclick="backdropClick(event)">
+<div class="backdrop" id="backdrop" onclick="backdropClick(event)">
   <div class="modal">
+    <div class="modal-handle"></div>
     <div class="modal-title">Add Transaction</div>
 
     <div class="type-toggle">
-      <button class="type-btn active-income" id="btnIncome"  onclick="setType('income')">+ Income</button>
-      <button class="type-btn"               id="btnExpense" onclick="setType('expense')">− Expense</button>
+      <button class="type-opt sel-income" id="optIncome"  onclick="setType('income')">＋ Income</button>
+      <button class="type-opt"            id="optExpense" onclick="setType('expense')">－ Expense</button>
     </div>
 
-    <div class="form-group">
-      <label class="form-label">Amount</label>
-      <div class="amount-wrapper">
-        <span class="amount-prefix">$</span>
-        <input class="form-input amount-input" type="number" inputmode="decimal"
-               id="inputAmount" placeholder="0.00" min="0" step="0.01">
+    <div class="field">
+      <label class="field-label">Amount</label>
+      <div class="field-wrap">
+        <span class="field-prefix">$</span>
+        <input class="field-input with-prefix" type="number" inputmode="decimal"
+               id="fAmount" placeholder="0.00" min="0" step="0.01">
       </div>
     </div>
 
-    <div class="form-group">
-      <label class="form-label">Notes</label>
-      <input class="form-input" type="text" id="inputNotes" placeholder="What's this for?">
+    <div class="field">
+      <label class="field-label">Notes</label>
+      <input class="field-input" type="text" id="fNotes" placeholder="Description">
     </div>
 
-    <div class="form-group">
-      <label class="form-label">Date</label>
-      <input class="form-input" type="date" id="inputDate">
+    <div class="field">
+      <label class="field-label">Date</label>
+      <input class="field-input" type="date" id="fDate">
     </div>
 
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-submit" id="submitBtn" onclick="submitTransaction()">Add</button>
+      <button class="btn-cancel-modal" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" id="saveBtn" onclick="submit()">Save</button>
     </div>
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<!-- Config banner if no API URL set -->
-<div class="config-banner" id="configBanner" style="display:none">
-  ⚙️ Set your <strong>SCRIPT_URL</strong> in the JS below, then redeploy.<br>
-  <a href="https://developers.google.com/apps-script/guides/web" target="_blank">Setup guide →</a>
-</div>
-
 <script>
-  // ╔══════════════════════════════════════════════════╗
-  // ║  CONFIGURE THIS — paste your Apps Script URL    ║
-  // ╚══════════════════════════════════════════════════╝
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyE-LObcUbULuGm6DoDv0dq5a2qIK3EuEBGgNoCNAvmtaJJHT66z0xLMWqA53xP6f8z4A/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyE-LObcUbULuGm6DoDv0dq5a2qIK3EuEBGgNoCNAvmtaJJHT66z0xLMWqA53xP6f8z4A/exec';
 
-  // ── State ─────────────────────────────────────────
-  let transactions = [];
-  let currentBalance = 0;
-  let txType = 'income';
-  let confirmingRow = null;
+let transactions = [];
+let balance = 0;
+let txType = 'income';
+let confirmingRow = null;
 
-  // ── Init ──────────────────────────────────────────
-  document.addEventListener('DOMContentLoaded', () => {
-    setInputDate();
-    if (!SCRIPT_URL || SCRIPT_URL.includes('YOUR_')) {
-      document.getElementById('configBanner').style.display = 'block';
-      renderEmpty('Configure SCRIPT_URL to connect to your sheet');
-      return;
-    }
-    loadData();
-  });
+// ── Init ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  setTodayDate();
+  loadData();
+});
 
-  function setInputDate() {
-    const today = new Date();
-    const y = today.getFullYear();
-    const m = String(today.getMonth() + 1).padStart(2, '0');
-    const d = String(today.getDate()).padStart(2, '0');
-    document.getElementById('inputDate').value = `${y}-${m}-${d}`;
+function setTodayDate() {
+  const d = new Date();
+  document.getElementById('fDate').value =
+    `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+// ── API ───────────────────────────────────────────────────
+async function call(params) {
+  const url = new URL(SCRIPT_URL);
+  Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, String(v)));
+  const r = await fetch(url, { redirect: 'follow' });
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.json();
+}
+
+async function loadData() {
+  setSyncing(true);
+  try {
+    const data = await call({ action: 'getTransactions' });
+    if (data.error) throw new Error(data.error);
+    transactions = (data.transactions || []).reverse();
+    balance = data.balance || 0;
+    render();
+  } catch(e) {
+    showToast('Failed to load: ' + e.message, true);
+  } finally {
+    setSyncing(false);
+  }
+}
+
+// ── Render ────────────────────────────────────────────────
+function render() {
+  // Balance
+  const el = document.getElementById('balDisplay');
+  const num = document.getElementById('balNum');
+  const abs = Math.abs(balance);
+  num.textContent = fmt(abs);
+  el.className = 'balance-amount' + (balance > 0 ? ' positive' : balance < 0 ? ' negative' : '');
+  if (balance < 0) num.textContent = '-' + num.textContent;
+
+  // Count
+  document.getElementById('txCount').textContent = transactions.length;
+
+  // List
+  const list = document.getElementById('txList');
+  if (!transactions.length) {
+    list.innerHTML = '<div class="empty">No transactions yet</div>';
+    return;
   }
 
-  // ── API ───────────────────────────────────────────
-  async function api(params) {
-    const url = new URL(SCRIPT_URL);
-    Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
-    const r = await fetch(url, { redirect: 'follow' });
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    return r.json();
-  }
-
-  async function apiPost(body) {
-    const url = new URL(SCRIPT_URL);
-    Object.entries(body).forEach(([k, v]) => url.searchParams.set(k, String(v)));
-    const r = await fetch(url, { redirect: 'follow' });
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    return r.json();
-  }
-
-  async function loadData() {
-    setSyncing(true);
-    try {
-      const data = await api({ action: 'getTransactions' });
-      if (data.error) throw new Error(data.error);
-      transactions   = (data.transactions || []).reverse(); // newest first
-      currentBalance = data.balance || 0;
-      renderBalance();
-      renderTransactions();
-    } catch (e) {
-      showToast('Failed to load: ' + e.message, true);
-      renderEmpty('Could not connect to sheet');
-    } finally {
-      setSyncing(false);
-    }
-  }
-
-  // ── Render ────────────────────────────────────────
-  function renderBalance() {
-    const el  = document.getElementById('balanceDisplay');
-    const num = document.getElementById('balanceNumber');
-    const val = currentBalance;
-    num.textContent = formatMoney(Math.abs(val));
-    el.className = 'balance-amount ' + (val > 0 ? 'positive' : val < 0 ? 'negative' : 'zero');
-    if (val < 0) num.textContent = '-' + num.textContent;
-  }
-
-  function renderTransactions() {
-    const list = document.getElementById('txList');
-    document.getElementById('txCount').textContent = transactions.length;
-
-    if (transactions.length === 0) {
-      renderEmpty('No transactions yet');
-      return;
-    }
-
-    list.innerHTML = transactions.map(tx => {
-      const sign    = tx.amount >= 0 ? 'positive' : 'negative';
-      const prefix  = tx.amount >= 0 ? '+' : '';
-      return `
-        <div class="tx-item ${sign}" id="tx-${tx.rowNumber}" onclick="handleTxClick(${tx.rowNumber})">
-          <div class="tx-notes">${escHtml(tx.notes || '—')}</div>
-          <div class="tx-amount ${sign}">${prefix}$${formatMoney(Math.abs(tx.amount))}</div>
-          <div class="tx-date">${formatDate(tx.date)}</div>
-          <div class="tx-balance">bal $${formatMoney(tx.balance)}</div>
-          <div class="tx-confirm-bar">
-            <span class="tx-confirm-text">DELETE THIS?</span>
-            <div class="tx-confirm-actions">
-              <button class="btn-cancel-del" onclick="cancelDelete(event, ${tx.rowNumber})">keep</button>
-              <button class="btn-confirm-del" onclick="confirmDelete(event, ${tx.rowNumber})">delete</button>
-            </div>
+  list.innerHTML = transactions.map(tx => {
+    const pos = tx.amount >= 0;
+    const sign = pos ? '+' : '';
+    return `
+      <div class="tx-card ${pos ? 'positive' : 'negative'}" id="tx-${tx.rowNumber}" onclick="tapTx(${tx.rowNumber})">
+        <div class="tx-row1">
+          <div class="tx-notes">${esc(tx.notes || '—')}</div>
+          <div class="tx-amount ${pos ? 'positive' : 'negative'}">${sign}$${fmt(Math.abs(tx.amount))}</div>
+        </div>
+        <div class="tx-row2">
+          <div class="tx-date">${fmtDate(tx.date)}</div>
+          <div class="tx-bal">bal $${fmt(tx.balance)}</div>
+        </div>
+        <div class="tx-confirm">
+          <span class="confirm-text">Delete this?</span>
+          <div class="confirm-btns">
+            <button class="btn-keep" onclick="cancelDel(event,${tx.rowNumber})">Keep</button>
+            <button class="btn-del"  onclick="confirmDel(event,${tx.rowNumber})">Delete</button>
           </div>
-        </div>`;
-    }).join('');
-  }
-
-  function renderEmpty(msg) {
-    document.getElementById('txList').innerHTML = `
-      <div class="empty-state">
-        <div class="empty-state-icon">📋</div>
-        <div class="empty-state-text">${msg}</div>
+        </div>
       </div>`;
+  }).join('');
+}
+
+// ── Delete ────────────────────────────────────────────────
+function tapTx(row) {
+  if (confirmingRow === row) return;
+  if (confirmingRow !== null) cancelDel(null, confirmingRow);
+  confirmingRow = row;
+  document.getElementById(`tx-${row}`)?.classList.add('confirming');
+}
+function cancelDel(e, row) {
+  if (e) e.stopPropagation();
+  document.getElementById(`tx-${row}`)?.classList.remove('confirming');
+  confirmingRow = null;
+}
+async function confirmDel(e, row) {
+  e.stopPropagation();
+  const el = document.getElementById(`tx-${row}`);
+  if (el) { el.style.opacity = '0.4'; el.style.pointerEvents = 'none'; }
+  confirmingRow = null;
+  try {
+    const data = await call({ action: 'deleteTransaction', rowNumber: row });
+    if (data.error) throw new Error(data.error);
+    transactions = (data.transactions || []).reverse();
+    balance = data.balance || 0;
+    render();
+    showToast('Deleted');
+  } catch(err) {
+    showToast('Delete failed: ' + err.message, true);
+    loadData();
   }
+}
 
-  // ── Delete ────────────────────────────────────────
-  function handleTxClick(rowNum) {
-    if (confirmingRow === rowNum) return;
-    if (confirmingRow !== null) cancelDelete(null, confirmingRow);
-    confirmingRow = rowNum;
-    document.getElementById(`tx-${rowNum}`).classList.add('confirming');
+// ── Modal ─────────────────────────────────────────────────
+function openModal() {
+  document.getElementById('backdrop').classList.add('open');
+  setTimeout(() => document.getElementById('fAmount').focus(), 300);
+}
+function closeModal() {
+  document.getElementById('backdrop').classList.remove('open');
+  document.getElementById('fAmount').value = '';
+  document.getElementById('fNotes').value  = '';
+  setTodayDate();
+  setType('income');
+}
+function backdropClick(e) {
+  if (e.target === document.getElementById('backdrop')) closeModal();
+}
+function setType(t) {
+  txType = t;
+  document.getElementById('optIncome').className  = 'type-opt' + (t==='income'  ? ' sel-income'  : '');
+  document.getElementById('optExpense').className = 'type-opt' + (t==='expense' ? ' sel-expense' : '');
+}
+
+async function submit() {
+  const raw = parseFloat(document.getElementById('fAmount').value);
+  if (!raw || raw <= 0) { showToast('Enter a valid amount', true); return; }
+  const amount = txType === 'expense' ? -raw : raw;
+  const notes  = document.getElementById('fNotes').value.trim();
+  const date   = document.getElementById('fDate').value;
+
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+  try {
+    const data = await call({ action: 'addTransaction', amount, notes, date });
+    if (data.error) throw new Error(data.error);
+    transactions = (data.transactions || []).reverse();
+    balance = data.balance || 0;
+    render();
+    closeModal();
+    showToast('Transaction saved');
+  } catch(err) {
+    showToast('Failed: ' + err.message, true);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Save';
   }
+}
 
-  function cancelDelete(e, rowNum) {
-    if (e) e.stopPropagation();
-    const el = document.getElementById(`tx-${rowNum}`);
-    if (el) el.classList.remove('confirming');
-    confirmingRow = null;
-  }
-
-  async function confirmDelete(e, rowNum) {
-    e.stopPropagation();
-    const el = document.getElementById(`tx-${rowNum}`);
-    if (el) { el.style.opacity = '0.4'; el.style.pointerEvents = 'none'; }
-    confirmingRow = null;
-
-    try {
-      const data = await apiPost({ action: 'deleteTransaction', rowNumber: rowNum });
-      if (data.error) throw new Error(data.error);
-      transactions   = (data.transactions || []).reverse();
-      currentBalance = data.balance || 0;
-      renderBalance();
-      renderTransactions();
-      showToast('Deleted');
-    } catch (err) {
-      showToast('Delete failed: ' + err.message, true);
-      await loadData();
-    }
-  }
-
-  // ── Modal ─────────────────────────────────────────
-  function openModal() {
-    document.getElementById('modalBackdrop').classList.add('open');
-    setTimeout(() => document.getElementById('inputAmount').focus(), 300);
-  }
-
-  function closeModal() {
-    document.getElementById('modalBackdrop').classList.remove('open');
-    document.getElementById('inputAmount').value = '';
-    document.getElementById('inputNotes').value  = '';
-    setInputDate();
-    setType('income');
-  }
-
-  function backdropClick(e) {
-    if (e.target === document.getElementById('modalBackdrop')) closeModal();
-  }
-
-  function setType(type) {
-    txType = type;
-    document.getElementById('btnIncome').className  = 'type-btn' + (type === 'income'  ? ' active-income'  : '');
-    document.getElementById('btnExpense').className = 'type-btn' + (type === 'expense' ? ' active-expense' : '');
-  }
-
-  async function submitTransaction() {
-    const amountRaw = parseFloat(document.getElementById('inputAmount').value);
-    if (!amountRaw || amountRaw <= 0) { showToast('Enter a valid amount', true); return; }
-
-    const amount = txType === 'expense' ? -amountRaw : amountRaw;
-    const notes  = document.getElementById('inputNotes').value.trim();
-    const date   = document.getElementById('inputDate').value;
-
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.textContent = 'Adding…';
-
-    try {
-      const data = await apiPost({ action: 'addTransaction', amount, notes, date });
-      if (data.error) throw new Error(data.error);
-      transactions   = (data.transactions || []).reverse();
-      currentBalance = data.balance || 0;
-      renderBalance();
-      renderTransactions();
-      closeModal();
-      showToast('Transaction added');
-    } catch (err) {
-      showToast('Failed: ' + err.message, true);
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Add';
-    }
-  }
-
-  // ── Helpers ───────────────────────────────────────
-  function setSyncing(on) {
-    document.getElementById('syncBtn').classList.toggle('spinning', on);
-  }
-
-  function formatMoney(n) {
-    return Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  }
-
-  function formatDate(str) {
-    if (!str) return '';
-    const [y, m, d] = str.split('-');
-    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    return `${parseInt(d)} ${months[parseInt(m) - 1]} ${y}`;
-  }
-
-  function escHtml(s) {
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  let toastTimer;
-  function showToast(msg, isError = false) {
-    const t = document.getElementById('toast');
-    t.textContent  = msg;
-    t.className    = 'toast show' + (isError ? ' error' : '');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => { t.className = 'toast'; }, 2800);
-  }
+// ── Helpers ───────────────────────────────────────────────
+function setSyncing(on) {
+  document.getElementById('syncBtn').classList.toggle('spinning', on);
+}
+function fmt(n) {
+  return Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function fmtDate(s) {
+  if (!s) return '';
+  const [y,m,d] = s.split('-');
+  const mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${parseInt(d)} ${mo[parseInt(m)-1]} ${y}`;
+}
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+let _toast;
+function showToast(msg, isErr=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isErr ? ' err' : '');
+  clearTimeout(_toast);
+  _toast = setTimeout(() => t.className = 'toast', 2800);
+}
 </script>
 </body>
 </html>
